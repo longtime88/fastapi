@@ -1,0 +1,95 @@
+Cloud-Deployment für FastAPI-Backend
+====================================
+
+Diese Datei enthält die wichtigsten Schritte und Hinweise,
+um das FastAPI-Backend in der Cloud zu deployen.
+
+
+1) Voraussetzungen
+------------------
+- Repo auf GitHub/GitLab/Bitbucket verfügbar
+- requirements.txt im Projekt vorhanden
+- .env-Datei mit echten Secrets (nicht committen!)
+
+
+2) Wichtige Hinweise vor dem Deploy
+------------------------------------
+- Die lokale Datenbank ist SQLite (workout_app.db). In der Cloud
+  wird diese Datei bei jedem Redeploy überschrieben.
+- Für Produktion besser eine externe Datenbank nutzen, z.B.:
+  - Supabase (Postgres, kostenloser Tier)
+  - Railway (Postgres Add-on)
+  - Render (Postgres Add-on)
+- AUTH_SECRET_KEY muss ein starkes, zufälliges Secret sein.
+- DATABASE_URL muss in der Cloud auf die externe Datenbank zeigen.
+
+
+3) Render (empfohlen für Einsteiger)
+------------------------------------
+- Auf render.com anmelden
+- New + -> Web Service
+- Repo auswählen
+- Runtime: Python 3
+- Build Command:
+    pip install -r fastapi/requirements.txt
+- Start Command:
+    uvicorn api.main:app --host 0.0.0.0 --port $PORT
+- Environment Variables:
+    AUTH_SECRET_KEY = <zufälliges Secret>
+    AUTH_ALGORITHM = HS256
+    DATABASE_URL = <wenn externe DB genutzt wird>
+- Free-Tier reicht für Entwicklung
+
+
+4) Railway
+----------
+- railway.app anmelden
+- New Project -> Deploy from GitHub
+- Railway erkennt Python/FastAPI automatisch
+- Start Command anpassen auf:
+    uvicorn api.main:app --host 0.0.0.0 --port $PORT
+- Environment Variables im Dashboard setzen
+- Free Guthaben ca. $5/Monat
+
+
+5) Fly.io
+---------
+- flyctl installieren
+- flyctl launch
+- Dockerfile wird automatisch erkannt
+- Secrets setzen:
+    flyctl secrets set AUTH_SECRET_KEY=... AUTH_ALGORITHM=HS256
+- Deploy:
+    flyctl deploy
+
+
+6) Wichtige Code-Hinweise für die Cloud
+---------------------------------------
+- main.py: Base.metadata.create_all() reicht für Entwicklung,
+  für Produktion besser Alembic-Migrationen nutzen
+- CORS in main.py anpassen, falls Frontend auf anderer Domain liegt
+- Health-Check unter "/" ist bereits vorhanden
+
+
+7) Nützliche Befehle
+--------------------
+- Lokal testen:
+    uvicorn api.main:app --reload
+
+- requirements prüfen:
+    pip freeze
+
+- Datenbank zurücksetzen (lokal):
+    workout_app.db löschen und Server neu starten
+
+
+8) Troubleshooting
+-----------------
+- 502 Bad Gateway: Start Command falsch oder Port nicht auf $PORT
+- 500 Internal Server Error: .env fehlt oder falsch
+- CORS Fehler: Origins in main.py erweitern
+- Datenbank weg: SQLite wird in der Cloud nicht persistiert
+
+
+Fragen oder Probleme? Backend-Logs in der Cloud-Konsole prüfen,
+dort stehen die genauen Fehlermeldungen.
