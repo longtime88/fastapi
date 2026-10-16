@@ -20,18 +20,6 @@ class User(Base):
     hashed_password = Column(String)
 
 
-# Workout-Modell: Ein einzelnes Training (z.B. "Bankdruecken")
-# Gehoert zu einem Benutzer und kann in mehreren Routines vorkommen
-class Workout(Base):
-    __tablename__ = "workouts"
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    name = Column(String, index=True)
-    description = Column(String, index=True)
-    
-  
-
-
 # Routine-Modell: Eine Trainingsroutine (z.B. "Beintag")
 # Besteht aus mehreren Workouts, gehoert zu einem Benutzer
 class Routine(Base):
@@ -40,6 +28,19 @@ class Routine(Base):
     user_id = Column(Integer, ForeignKey("users.id"))
     name = Column(String, index=True)
     description = Column(String, index=True)
+    
+    workouts = relationship("Workout", secondary=workout_routine_association, back_populates="routines")
+
+
+# Add back_populates to Workout
+class Workout(Base):
+    __tablename__ = "workouts"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    name = Column(String, index=True)
+    description = Column(String, index=True)
+    
+    routines = relationship("Routine", secondary=workout_routine_association, back_populates="workouts")
    
     
     

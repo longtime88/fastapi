@@ -28,7 +28,12 @@ def get_db():
 
 
 # Passwort-Verschluesselung mit bcrypt
-bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Using sha256_crypt as fallback to avoid bcrypt version issues
+bcrypt_context = CryptContext(
+    schemes=["bcrypt", "sha256_crypt"],
+    deprecated="auto",
+    bcrypt__rounds=12,
+)
 
 # OAuth2 Password Bearer: Extrahiert Token aus dem Authorization-Header
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")

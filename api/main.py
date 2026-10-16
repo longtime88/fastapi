@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from .routers import auth, workouts, routines
+from .routers import auth
 from .database import Base, engine
 
 
@@ -28,14 +28,11 @@ app.add_middleware(
 def health_check():
     return {"message": "Health check complete"}
 
-@app.get("/")
-def get_error():
-    return {"message": "An error occurred"}    
 
 # Registriere alle Router (API-Endpunkte)
 app.include_router(auth.router)
-app.include_router(workouts.router)
-app.include_router(routines.router)
+# app.include_router(workouts.router)
+# app.include_router(routines.router)
 
 
 
