@@ -1,20 +1,11 @@
-import os
-from dotenv import load_dotenv
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import jwt, JWTError
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
+from .core.config import ALGORITHM, SECRET_KEY
 from .database import SessionLocal
-
-# Lade Umgebungsvariablen aus .env-Datei
-load_dotenv()
-
-# Konfiguration fuer JWT-Token und Datenbank
-SECRET_KEY = os.getenv("AUTH_SECRET_KEY")
-ALGORITHM = os.getenv("AUTH_ALGORITHM")
-DATABASE_URL = os.getenv("DATABASE_URL")
 
 
 # Dependency: Stellt eine Datenbank-Session fuer jeden Request bereit

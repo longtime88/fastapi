@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from . import models  # noqa: F401 - registers all SQLAlchemy models
 from .routers import auth
 from .database import Base, engine
 
