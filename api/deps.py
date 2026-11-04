@@ -18,12 +18,14 @@ def get_db():
         db.close()
 
 
-# Passwort-Verschluesselung mit bcrypt
-# Using sha256_crypt as fallback to avoid bcrypt version issues
+# Passwort-Verschluesselung mit einem stabilen Backend.
+# bcrypt kann in einigen Python-/passlib-Kombinationen fehlschlagen.
+# PBKDF2 ist kompatibel und ausreichend fuer die lokale Anmeldung.
+# sha256_crypt bleibt als Fallback fuer bereits gespeicherte Hashes erhalten.
 bcrypt_context = CryptContext(
-    schemes=["bcrypt", "sha256_crypt"],
+    schemes=["pbkdf2_sha256", "sha256_crypt"],
     deprecated="auto",
-    bcrypt__rounds=12,
+    pbkdf2_sha256__rounds=200000,
 )
 
 # OAuth2 Password Bearer: Extrahiert Token aus dem Authorization-Header

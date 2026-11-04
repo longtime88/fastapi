@@ -1,111 +1,46 @@
-# Email-Support-Client
+# FastAPI-Backend
 
-A full-stack workout application with a FastAPI backend and Nuxt 4 frontend.
+Das Backend stellt die Benutzerregistrierung und Authentifizierung für das Support-Portal bereit.
 
-## Architecture
+## Voraussetzungen
 
-```
-.
-├── fastapi/          # Backend (FastAPI + SQLAlchemy + SQLite)
-│   ├── api/
-│   │   ├── main.py           # FastAPI app entry point
-│   │   ├── database.py       # Database connection
-│   │   ├── models.py         # SQLAlchemy models
-│   │   └── routers/          # API route handlers
-│   │       ├── auth.py       # Authentication endpoints
-│   │       ├── workouts.py   # Workout endpoints
-│   │       └── routines.py   # Routine endpoints
-│   ├── requirements.txt
-│   ├── workout_app.db        # SQLite database
-│   └── .env
-├── frontend/         # Frontend (Nuxt 4 + Tailwind CSS)
-│   ├── app/
-│   │   ├── app.vue           # Root component
-│   │   ├── pages/            # Route pages
-│   │   └── ...
-│   ├── composables/            # Pinia-style composables
-│   │   ├── useAuth.js
-│   │   └── useSupport.js
-│   ├── components/             # Vue components
-│   └── nuxt.config.ts
-└── .github/
-    └── workflows/
-        └── ci.yml 
-        
-                    # CI pipeline
-```
+- Python 3.11 oder neuer
 
-## Development
-
-### Prerequisites
-
-- Python 3.11+
-- Node.js 20+
-- pip / npm
-
-### Backend
+## Installation
 
 ```bash
 cd fastapi
+python -m venv .venv
+source .venv/bin/activate       # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-API docs: http://localhost:8000/docs
+Erstelle `fastapi/.env`:
 
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-App: http://localhost:3000
-
-### Environment Variables
-
-**Frontend** (`frontend/.env`):
-```
-NUXT_PUBLIC_API_BASE=http://localhost:8000
-NUXT_PUBLIC_SUPPORT_API_BASE=http://localhost:5000
-```
-
-**Backend** (`fastapi/.env`):
-```
-AUTH_SECRET_KEY=your-secret-key
+```env
+AUTH_SECRET_KEY=ein-langes-zufaelliges-geheimnis
 AUTH_ALGORITHM=HS256
-API_URL=http://localhost:3000
 ```
 
-## Testing
-
-### Frontend
+## Start
 
 ```bash
-cd frontend
-npm run lint      # ESLint
-npm run build     # Production build
+python -m uvicorn api.main:app --reload --port 8000
 ```
 
-### Backend
+API: <http://localhost:8000>  
+API-Dokumentation: <http://localhost:8000/docs>
+
+## Endpunkte
+
+- `POST /auth/` – Benutzer registrieren
+- `POST /auth/token` – anmelden und JWT erhalten
+- `GET /auth/me` – angemeldeten Benutzer abrufen
+
+## Tests
 
 ```bash
-cd fastapi
-pytest
+python -m pytest
 ```
 
-## Deployment
-
-```bash
-# Build frontend
-cd frontend
-npm run build
-# Output is in .output/
-
-# Run backend
-cd fastapi
-python -m uvicorn api.main:app --host 0.0.0.0 --port 8000
-```
-
-## License
+Die SQLite-Datenbank wird lokal als `workout_app.db` angelegt. Produktionssysteme sollten eine geeignete persistente Datenbank und Migrationen verwenden.

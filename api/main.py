@@ -32,8 +32,6 @@ def health_check():
 
 # Registriere alle Router (API-Endpunkte)
 app.include_router(auth.router)
-# app.include_router(workouts.router)
-# app.include_router(routines.router)
 
 
 
