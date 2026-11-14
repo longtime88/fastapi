@@ -38,7 +38,7 @@ def login_for_access_token(
             db,
             form_data.username,
             form_data.password,
-        )
+        ) ## try catch block wenn oben nicht geht dann unten, fehlermedlung wenn token bereits exesitert
     except auth_service.InvalidCredentialsError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
